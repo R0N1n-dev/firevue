@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Home</h1>
-    <p>{{ userStore.userData?.email }}</p>
+    <p> <b>{{ userStore.userData?.email }}</b> is logged in</p>
   </div>
 </template>
 

@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import router from "../router";
@@ -13,6 +14,7 @@ export const useUserStore = defineStore("userStore", {
     userData: null,
     //loadingUser: false,
     loadingSession: false,
+    errorMsg: null,
   }),
   actions: {
     async registerUser(email, password) {
@@ -23,13 +25,18 @@ export const useUserStore = defineStore("userStore", {
           email,
           password
         );
+        await sendEmailVerification(user);
         this.userData = { email: user.email, uid: user.uid };
         //this.loadingSession = false;
         router.push("/");
       } catch (error) {
         console.log(error);
+        this.errorMsg = error.message;
       } finally {
         this.loadingSession = false;
+        setTimeout(() => {
+          this.errorMsg = null;
+        }, 3000);
       }
     },
     async loginUser(email, password) {
@@ -45,8 +52,12 @@ export const useUserStore = defineStore("userStore", {
         router.push("/");
       } catch (error) {
         console.log(error);
+        this.errorMsg = error.message;
       } finally {
         this.loadingSession = false;
+        setTimeout(() => {
+          this.errorMsg = null;
+        }, 3000);
       }
     },
     async logoutUser() {
@@ -56,6 +67,11 @@ export const useUserStore = defineStore("userStore", {
         router.push("/login");
       } catch (error) {
         console.log(error);
+        this.errorMsg = error.message;
+      } finally {
+        setTimeout(() => {
+          this.errorMsg = null;
+        }, 3000);
       }
     },
     /*currentUser() {
